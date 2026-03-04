@@ -117,7 +117,7 @@ run.addEventListener('click', ()=> {
     let against_model= document.querySelector('#against').value
 
     if (totalrun>5){
-        ai_model='claude-sonnet-4-6'
+        ai_model=document.querySelector('#judge_option').value
 
 
         Promise.all([
@@ -185,20 +185,32 @@ run.addEventListener('click', ()=> {
             do not break character`, { model: ai_model })
         ]).then(([logicRes, languageRes, clarityRes]) => {
 
-            // Process logic
-            let judgedLogic = logicRes.message.content[0].text.trim().replace(/[()]/g, '')
+            let judgedLogic,judgedLang,judgedClar;
+            if(document.querySelector('#judge_option').value.includes('claude')){
+                judgedLogic = logicRes.message.content[0].text.trim().replace(/[()]/g, '')
+                judgedLang = languageRes.message.content[0].text.trim().replace(/[()]/g, '')
+                judgedClar = clarityRes.message.content[0].text.trim().replace(/[()]/g, '')
+
+            }
+            else{
+                console.log(logicRes)
+                judgedLogic = logicRes.message.content.trim().replace(/[()]/g, '')
+                judgedLang = languageRes.message.content.trim().replace(/[()]/g, '')
+                judgedClar = clarityRes.message.content.trim().replace(/[()]/g, '')
+
+
+            }
+
+
+
             let logicScores = judgedLogic.split(',')
             judgement.logics.for = logicScores[0].trim()
             judgement.logics.against = logicScores[1].trim()
 
-            // Process language
-            let judgedLang = languageRes.message.content[0].text.trim().replace(/[()]/g, '')
             let langScores = judgedLang.split(',')
             judgement.language.for = langScores[0].trim()
             judgement.language.against = langScores[1].trim()
 
-            // Process clarity
-            let judgedClar = clarityRes.message.content[0].text.trim().replace(/[()]/g, '')
             let clarScores = judgedClar.split(',')
             judgement.clarity.for = clarScores[0].trim()
             judgement.clarity.against = clarScores[1].trim()

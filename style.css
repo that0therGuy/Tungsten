@@ -185,7 +185,22 @@ select{
     text-align: center;
     gap:10px;
 }
+.judges_panel{
+    flex: 1;
+    text-align: center;
+    display:flex;
+    box-shadow: 0 0 30px rgba(27, 27, 27, 0.25);
+    padding:20px;
+    align-items: center;
+    width:80vw;
 
+
+
+}
+.judges_panel div, .judges_panel select{
+    flex: 1;
+
+}
 
 .links{
     display:flex;
