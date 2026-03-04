@@ -30,8 +30,7 @@ let complete_debate={}
 
 
 let prompt_engineer=`
-Be persuasive and agressive.
-
+be aggressive and pursuasive.
 If there are no arguments in the history, You are starting it.
 
 Attack weaknesses of the latest arguments of the opponent
@@ -40,8 +39,7 @@ Do not break character, you can shame the opponent if their arguments are too na
 
 Provide your arguments in bullet points and proper formatting, do not give out large paragraphs. Use markdown formatting. give more space between points
 
-You are allowed to roast/make fun of the opponent because their arguments do not make sense or gain confidence of the judges.
-
+Be persuasive and sharp. Wit and humor are welcome but substance must lead — judges penalize arguments that are more than 30% insult.
 Do not concede easily.
 
 Try to be interesting and funny.
