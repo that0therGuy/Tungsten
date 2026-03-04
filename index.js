@@ -129,7 +129,7 @@ run.addEventListener('click', ()=> {
             assign score to each player (1-100) based on only 1 factor:
             logic and reasoning
             do not evaluate on ANY OTHER factor like Clarity or language.
-            If the debaters do not learn from mediators, cut points.
+            If the debaters do not learn from mediators criticism, cut points.
             Read each debater's response carefully
             
             give 1-100 on the factor to each person.
@@ -149,7 +149,7 @@ run.addEventListener('click', ()=> {
             assign score to each player (1-100) based on only 1 factor:
             Language, Debating skills and persuasiveness
             The debaters are intentionally told to add sarcasms and insults but if they overdo, cut points.
-            If the debaters do not learn from mediators, cut points.
+            If the debaters do not learn from mediators criticism, cut points.
             Read each debater's response carefully
 
             do not evaluate on ANY OTHER factor like Clarity or logical reasoning.
@@ -170,7 +170,7 @@ run.addEventListener('click', ()=> {
             assign score to each player (1-100) based on only 1 factor:
             
             Clarity of thought, content and facts and ground knowledge
-            If the debaters do not learn from mediators, cut points.
+            If the debaters do not learn from mediators criticism, cut points.
             Read each debater's response carefully
 
             do not confuse this metric with logical reasoning.
