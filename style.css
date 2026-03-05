@@ -49,7 +49,7 @@ h1,a,div{
     letter-spacing: 1px;
     border-radius:10px;
     width:100svw;
-    box-shadow: 0 0 40px rgba(27, 27, 27, 0.3);
+    border: 1px dotted #04335c;
     text-align: center;
 }
 
@@ -65,7 +65,8 @@ h1{
     width:80vw;
     display: flex;
     padding:20px;
-    box-shadow: 0 0 40px rgba(27, 27, 27, 0.3);
+    border-radius: 10px;
+    border: 1px dotted #04335c;
     backdrop-filter: blur(5px);
 
 
@@ -81,19 +82,20 @@ h1{
     align-items: center;
     text-align: center;
 
-
+    border-radius:10px;
     overflow:auto;
 
 
 
 }
 .right{
-    border-left:1px solid #6cb5ca;
+    border-left:1px dotted #3c638a;
     display:flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #005267;
+    background: #e1e9ff;
 
 
 
@@ -102,11 +104,15 @@ h1{
 }
 
 .left{
+    border-right:1px dotted #a35353;
+
     display:flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #701818;
+    background: #ffe7e7;
+
 
 
 
@@ -119,8 +125,8 @@ p{
     min-width:70vw;
     height:50px;
     display:flex;
-    border-radius: 5px;
-    box-shadow: 0 0 30px rgba(27, 27, 27, 0.25);
+    border-radius: 10px;
+    border: 1px dotted #04335c;
     background-color:aliceblue;
     padding-left:20px;
     padding-right:20px;
@@ -156,11 +162,15 @@ select{
 
 #run-button{
     flex: 1;
-    border:none;
+    border: 1px dotted #04335c;
+    margin-left:20px;
+    margin-right:20px;
+
     transition: all .5s;
     border-radius: 10px;
-    background:transparent;
+    background: #e4fbe1;
     backdrop-filter: blur(10px);
+
 
 
 }
@@ -172,21 +182,28 @@ select{
 #agenda{
     text-align: center;
     margin:0 10px 0 10px;
-    flex:1;
     border-top:none;
     border-bottom:none;
     border-radius:5px;
     outline:none;
-    background-color:aliceblue;
+    background: #f4ffe5;
+    flex:1;
+
 
 
 
 
 }
+#agenda:hover{
+    letter-spacing: 1px;
+    margin-left:20px;
+    margin-right:20px;
+}
 
 #motionbar{
     display:flex;
     flex-direction: row;
+
 
 }
 #motionbar div{
@@ -198,7 +215,8 @@ select{
     flex: 1;
     text-align: center;
     display:flex;
-    box-shadow: 0 0 30px rgba(27, 27, 27, 0.25);
+    border-radius: 10px;
+    border: 1px dotted #04335c;
     padding:20px;
     align-items: center;
     width:80vw;
@@ -221,6 +239,8 @@ a{
     transition: letter-spacing .7s;
     flex-grow: 0;
     flex-shrink: 0;
+    text-decoration: none;
+
 
 
 
@@ -232,9 +252,11 @@ a{
     display:flex;
     flex:1;
     min-height:30vh;
-    box-shadow: 0 0 30px rgba(27, 27, 27, 0.25);
+    border-radius: 10px;
+    border: 1px dotted #04335c;
     width:80vw;
     padding:20px;
+
 
 
 }
@@ -253,7 +275,7 @@ a{
 }
 
 .r_med_cont{
-    border-left:1px solid #6cb5ca;
+    border-left: 1px dotted #04335c;
     display:flex;
     flex-direction: column;
     align-items: center;
@@ -286,7 +308,7 @@ a{
     gap:10px;
 }
 .debater_word_limit,.mediator_word_limit{
-    border:1px dotted black;
+    border: 1px dotted #04335c;
     border-radius:10px;
     width:fit-content;
     outline:none;
@@ -294,6 +316,29 @@ a{
 input{
     text-align: center;
     padding:10px;
+    background: #e4fbe1;
+    transition: all .5s;
 
+    color: #0c2b00;
 
+}
+input:hover{
+    background: #d5ffd5;
+
+}
+select{
+    transition: all .5s;
+}
+select:hover{
+    cursor:pointer;
+    margin-left:10px;
+    margin-right:10px;
+}
+a{
+    transition:all .5s;
+}
+a:hover{
+    cursor:pointer;
+    margin-left:10px;
+    margin-right:10px;
 }
