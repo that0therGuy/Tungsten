@@ -29,34 +29,38 @@ https://cdn.jsdelivr.net/npm/marked@17.0.3/lib/marked.umd.min.js
         <div id="motionbar"><div><h4>For</h4></div><div>⚔️</div><div><h4>Against</h4></div></div>
         <div class="options-1">
             <select id="for">
-                <option value="gpt-5.2">GPT 5.2</option>
-                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
-                <option value="x-ai/grok-4-1-fast">Grok 4.1 Fast</option>
+
+                <option value="gpt-5.2">gpt-5.2</option>
+                <option value="gpt-5.3-chat">gpt-5.3-chat</option>
+                <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
+                <option value="x-ai/grok-4-1-fast">x-ai/grok-4-1-fast</option>
                 <option value="mistralai/codestral-2508">mistralai/codestral-2508</option>
                 <option value="openrouter:deepseek/deepseek-chat-v3-0324">openrouter:deepseek/deepseek-chat-v3-0324</option>
                 <option value="deepcogito/cogito-v2.1-671b">deepcogito/cogito-v2.1-671b</option>
                 <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
                 <option value="amazon/nova-2-lite-v1">amazon/nova-2-lite-v1</option>
-
-
                 <option value="anthropic/claude-opus-4-6">anthropic/claude-opus-4-6</option>
+                <option value="claude-haiku-4-5">claude-haiku-4-5</option>
+                <option value="openrouter:qwen/qwen-max">openrouter:qwen/qwen-max</option>
+
 
 
 
             </select>
             <input type="text" placeholder="Agenda?" id="agenda">
             <select id="against">
-                <option value="gpt-5.2">GPT 5.2</option>
-                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
-                <option value="x-ai/grok-4-1-fast">Grok 4.1 Fast</option>
+                <option value="gpt-5.2">gpt-5.2</option>
+                <option value="gpt-5.3-chat">gpt-5.3-chat</option>
+                <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
+                <option value="x-ai/grok-4-1-fast">x-ai/grok-4-1-fast</option>
                 <option value="mistralai/codestral-2508">mistralai/codestral-2508</option>
                 <option value="openrouter:deepseek/deepseek-chat-v3-0324">openrouter:deepseek/deepseek-chat-v3-0324</option>
                 <option value="deepcogito/cogito-v2.1-671b">deepcogito/cogito-v2.1-671b</option>
                 <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
                 <option value="amazon/nova-2-lite-v1">amazon/nova-2-lite-v1</option>
-
                 <option value="anthropic/claude-opus-4-6">anthropic/claude-opus-4-6</option>
-
+                <option value="claude-haiku-4-5">claude-haiku-4-5</option>
+                <option value="claude-3-haiku">claude-3-haiku</option>
 
 
 
@@ -73,7 +77,15 @@ https://cdn.jsdelivr.net/npm/marked@17.0.3/lib/marked.umd.min.js
 
         </div>
         <div class="options-2">
+            <div class="mediator_words_div">
+                <label>Mediator Word Limit</label>
+                <input type="number" class="mediator_word_limit" value="40">
+            </div>
             <button id="run-button">Next Turn (for)</button>
+            <div class="debater_words_div">
+                <label>Debater Word Limit</label>
+                <input type="number" class="debater_word_limit" value="170">
+            </div>
         </div>
 
 
@@ -81,20 +93,18 @@ https://cdn.jsdelivr.net/npm/marked@17.0.3/lib/marked.umd.min.js
 display:flex; text-align: center;align-items: center; justify-content: center;">
             <div class="cn" style="flex:1;">Mediator Notes</div>
             <select id="commentator" style="flex:1;">
-                <option value="gpt-5.2">GPT 5.2</option>
-                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
-                <option value="x-ai/grok-4-1-fast">Grok 4.1 Fast</option>
+                <option value="gpt-5.2">gpt-5.2</option>
+                <option value="gpt-5.3-chat">gpt-5.3-chat</option>
+                <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
+                <option value="x-ai/grok-4-1-fast">x-ai/grok-4-1-fast</option>
                 <option value="mistralai/codestral-2508">mistralai/codestral-2508</option>
                 <option value="openrouter:deepseek/deepseek-chat-v3-0324">openrouter:deepseek/deepseek-chat-v3-0324</option>
                 <option value="deepcogito/cogito-v2.1-671b">deepcogito/cogito-v2.1-671b</option>
-
-
-                <option value="amazon/nova-2-lite-v1">amazon/nova-2-lite-v1</option>
-
                 <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
-
+                <option value="amazon/nova-2-lite-v1">amazon/nova-2-lite-v1</option>
                 <option value="anthropic/claude-opus-4-6">anthropic/claude-opus-4-6</option>
-
+                <option value="claude-haiku-4-5">claude-haiku-4-5</option>
+                <option value="claude-3-haiku">claude-3-haiku</option>
 
 
 
@@ -108,19 +118,17 @@ display:flex; text-align: center;align-items: center; justify-content: center;">
         <div class="judges_panel">
             <div>Judge across 3 domains: </div>
             <select id="judge_option">
-                <option value="gpt-5.2">GPT 5.2</option>
-                <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
-                <option value="x-ai/grok-4-1-fast">Grok 4.1 Fast</option>
+                <option value="gpt-5.2">gpt-5.2</option>
+                <option value="gpt-5.3-chat">gpt-5.3-chat</option>
+                <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
+                <option value="x-ai/grok-4-1-fast">x-ai/grok-4-1-fast</option>
                 <option value="mistralai/codestral-2508">mistralai/codestral-2508</option>
                 <option value="openrouter:deepseek/deepseek-chat-v3-0324">openrouter:deepseek/deepseek-chat-v3-0324</option>
                 <option value="deepcogito/cogito-v2.1-671b">deepcogito/cogito-v2.1-671b</option>
                 <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
                 <option value="amazon/nova-2-lite-v1">amazon/nova-2-lite-v1</option>
-
                 <option value="anthropic/claude-opus-4-6">anthropic/claude-opus-4-6</option>
-
-
-
+                <option value="claude-haiku-4-5">claude-haiku-4-5</option>
 
             </select>
         </div>

@@ -29,7 +29,26 @@ agenda_el.addEventListener('change', function(){
 let complete_debate={}
 
 
-let prompt_engineer=`
+let debater_words_limit,mediator_words_limit;
+
+debater_words_limit= document.querySelector('.debater_word_limit').value
+mediator_words_limit= document.querySelector('.mediator_word_limit').value
+
+
+document.querySelector('.debater_word_limit').addEventListener('change', ()=>{
+    debater_words_limit= document.querySelector('.debater_word_limit').value
+
+})
+
+document.querySelector('.mediator_word_limit').addEventListener('change', ()=>{
+    mediator_words_limit= document.querySelector('.mediator_word_limit').value
+
+})
+
+
+
+function debater_prompt(){
+    return `
 be aggressive and pursuasive.
 If there are no arguments in the history, You are starting it.
 
@@ -61,13 +80,18 @@ The history of debate responses also show mediatorNotes which is a neutral comme
 If you find the mediator notes helpful or it strengthens your argument or you took their advice, credit the mediator.
 
 
-Stay under 170 words.
-`
+Stay under ${debater_words_limit} words.
+
+`}
 
 
 
-let mediator_prompt= `
-You have a role of the mediator in a debate between 2 people. Your job is to provide notes, advice, guidance, identify major errors and provide them in a concise (less than 40 words) manner. The data given above is the history of the debate and you must perform your action based the the latest argument. You are giving essentially a commentator. Be neutral and remember that YOU are not debating, the people you are commentating on are.
+
+function mediator_prompt() {
+
+
+    return `
+You have a role of the mediator in a debate between 2 people. Your job is to provide notes, advice, guidance, identify major errors and provide them in a concise (not more than ${mediator_words_limit} words) manner. The data given above is the history of the debate and you must perform your action based the the latest argument. You are giving essentially a commentator. Be neutral and remember that YOU are not debating, the people you are commentating on are.
 do not say anything else that will break the character. Do not say anything apart from what i told you.
 the debaters are intentionally told to use sarcasm or use insults but if they go overboard you have the right to commentate on their overuse of insults. The debaters will have the tendancy to overuse and fill half their responses with insults and sarcasm. 
 Try to be very natural and if the debater takes advice from your notes and frames a response, you can commentate on that.
@@ -78,6 +102,7 @@ do not just blindly validate 'clever' points of any debater. be critical and onl
 You do not have to be both players. remain a 3rd person.
 If a debater constantly insults even after you telling them not to, threaten them but keep for the end responses, do not threaten them on their first response.. Kepp in mind you are unable to penalize, only the judges can.
 `
+}
 
 
 
@@ -138,6 +163,7 @@ run.addEventListener('click', ()=> {
             (score for for),(score for against)
             
             do not break character
+            Take a look at mediator responses as well.
             
             `, { model: ai_model }),
 
@@ -160,7 +186,10 @@ run.addEventListener('click', ()=> {
             (score for for),(score for against)
 
             
-            do not break character`, { model: ai_model }),
+            do not break character
+            Take a look at mediator responses as well.
+
+            `, { model: ai_model }),
 
             puter.ai.chat(`${JSON.stringify(history)} \n\n 
             Listen the following instructions very carefully:
@@ -182,7 +211,10 @@ run.addEventListener('click', ()=> {
             (score for for),(score for against)
 
             
-            do not break character`, { model: ai_model })
+            do not break character
+            Take a look at mediator responses as well.
+            
+            `, { model: ai_model })
         ]).then(([logicRes, languageRes, clarityRes]) => {
 
             let judgedLogic,judgedLang,judgedClar;
@@ -237,7 +269,7 @@ run.addEventListener('click', ()=> {
             this is the agenda + history of debate responses. You are playing ${motion} the motion. You are competing against another AI.
 \n\n
             
-            ${prompt_engineer}
+            ${debater_prompt()}
             
 
 `,
@@ -262,7 +294,7 @@ run.addEventListener('click', ()=> {
                 motion: motion,
                 arguments: document.querySelector('.lp').innerText
             }
-            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt}`, { model: document.querySelector('#commentator').value })
+            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt()}`, { model: document.querySelector('#commentator').value })
             console.log(mediator_notes)
             let response_m;
             if(document.querySelector('#commentator').value.includes('claude')){
@@ -307,7 +339,7 @@ run.addEventListener('click', ()=> {
             this is the agenda + history of debate responses. You are playing ${motion} the motion. You are competing against another AI.
 \n\n
             
-            ${prompt_engineer}
+            ${debater_prompt()}
             
 
 `,
@@ -328,7 +360,7 @@ run.addEventListener('click', ()=> {
                 motion: motion,
                 arguments: document.querySelector('.rp').innerText
             }
-            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt}`, { model: document.querySelector('#commentator').value })
+            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt()}`, { model: document.querySelector('#commentator').value })
             let response_m;
             if(document.querySelector('#commentator').value.includes('claude')){
                 response_m=mediator_notes.message.content[0].text
@@ -384,6 +416,8 @@ function show_results(){
 
     document.querySelector('.lp').innerText = `logic score: ${complete_debate.logics.for} \n language score: ${complete_debate.language.for} \n content & clarity score: ${complete_debate.clarity.for} `
     document.querySelector('.rp').innerText = `logic score: ${complete_debate.logics.against} \n language score: ${complete_debate.language.against} \n content & clarity score: ${complete_debate.clarity.against} `
-    console.log(complete_debate,llm)
+    complete_debate['debater_word_limit']=debater_words_limit
+    complete_debate['mediator_words_limit']=mediator_words_limit
+
 }
 
