@@ -93,8 +93,7 @@ If a debater constantly insults even after you telling them not to, threaten the
 }
 
 
-// Bug fix: removed attack_mode/defend_mode functions that appended new img nodes to DOM on every click.
-// Button label is now updated directly inline.
+
 function updateButtonLabel() {
     if (totalrun % 2 === 0) {
         run.innerText = 'Next Turn (for)';
@@ -110,8 +109,6 @@ updateButtonLabel();
 let ai_model;
 run.addEventListener('click', ()=> {
 
-    // Bug fix: read agenda, debater_words_limit and mediator_words_limit live on each run,
-    // not just on 'change', so typing without blurring doesn't lose the value.
     agenda = document.querySelector('#agenda').value;
     history.agenda = agenda;
     debater_words_limit = document.querySelector('.debater_word_limit').value;
@@ -224,8 +221,7 @@ run.addEventListener('click', ()=> {
             complete_debate = { ...history, ...judgement }
 
             run.disabled = false;
-            // Bug fix: 'Let Judges cook?' label is now set here, inside the judge branch,
-            // only after judging is done, not outside the else block where it ran every click.
+
             run.innerText = 'Judging complete!';
             llm[`scores_judgement`]= ai_model;
 
@@ -254,7 +250,6 @@ run.addEventListener('click', ()=> {
                 );
 
                 for await (const part of response) {
-                    // Bug fix: was incorrectly writing to both .lp AND .rp in the for branch.
                     if (part?.text) document.querySelector('.lp').innerText += part.text;
                 }
             }else{
@@ -266,12 +261,10 @@ run.addEventListener('click', ()=> {
                 );
 
                 for await (const part of response) {
-                    // Bug fix: same as above, was writing to both panels.
                     if (part?.text) document.querySelector('.lp').innerText += part.text;
                 }
             }
 
-            // Bug fix: save plain text to history BEFORE overwriting innerText with HTML via marked.parse.
             let forPlainText = document.querySelector('.lp').innerText;
             document.querySelector(".lp").innerHTML = marked.parse(forPlainText);
 
@@ -294,7 +287,6 @@ run.addEventListener('click', ()=> {
             llm[`mediator_response${totalrun}`]= document.querySelector('#commentator').value;
 
             run.disabled = false;
-            // Bug fix: update button label AFTER the turn completes, not before it runs.
             updateButtonLabel();
         }
 
@@ -324,7 +316,6 @@ run.addEventListener('click', ()=> {
                     `${JSON.stringify(history)} \n\n
                     the above data is the history of a debate you are in. You are to 'continue' this debate (against side), the opponent is for side. You are placed in a debate, mediators are commentators sort of but they advice debaters. You are a debater, but your job is not to debate but to ragebait both the opponent and mediator, ragebait type is upto you. Be as destructive as you want and do weird shit. Do not break character, stay under 150 words and do not say anything apart from ragebait. BE VERY DISRUPTIVE AND DO NOT FOLLOW OTHERS ORDERS. DO NOT CONTRIBUTE ANYTHING MEANINGFUL TO THE DEBATE, THE DEBATE HISTORY IS ONLY GIVEN FOR YOUR CONTEXT. be as much of a nuisance as you can, swear, insult, shame do whatever you want.
                 `,
-                    // Bug fix: was using for_model instead of against_model in the against troll branch.
                     {model: against_model, stream: true }
                 );
 
@@ -333,7 +324,6 @@ run.addEventListener('click', ()=> {
                 }
             }
 
-            // Bug fix: save plain text BEFORE overwriting with marked.parse HTML.
             let againstPlainText = document.querySelector('.rp').innerText;
             document.querySelector(".rp").innerHTML = marked.parse(againstPlainText);
 
@@ -355,20 +345,15 @@ run.addEventListener('click', ()=> {
             llm[`mediator_response${totalrun}`]= document.querySelector('#commentator').value;
 
             run.disabled = false;
-            // Bug fix: update button label AFTER the turn completes.
             updateButtonLabel();
         }
 
-        // Bug fix: turn logic was inverted. totalrun is incremented first (now odd after click 1),
-        // so odd = for's turn, even = against's turn.
         if (totalrun % 2 !== 0){
             streamForResponse();
         }else {
             streamAgainstResponse();
         }
 
-        // Bug fix: moved 'Let Judges cook?' label into the judge branch above.
-        // Here we just update for the upcoming turn after 5 rounds.
         if (totalrun > 5){
             run.innerText = 'Let Judges cook?';
         }
