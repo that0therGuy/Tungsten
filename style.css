@@ -68,6 +68,8 @@ h1{
     border-radius: 10px;
     border: 1px dotted #04335c;
     backdrop-filter: blur(5px);
+    overflow: hidden;
+    max-width: 80vw
 
 
 }
@@ -118,8 +120,17 @@ h1{
 
 }
 
-p{
+p {
     white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.left, .right {
+
+    overflow: auto;
+    max-width: 100%;
+    word-break: break-word;
 }
 .options-1,.options-2{
     min-width:70vw;

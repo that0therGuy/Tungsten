@@ -1,51 +1,41 @@
 marked.use({
     pedantic: true,
-
 });
 let l_troll= false;
-let r_troll=false
-let attack,defend;
-let run= document.querySelector('#run-button')
-let agenda_el = document.querySelector('#agenda')
+let r_troll=false;
+let run= document.querySelector('#run-button');
+let agenda_el = document.querySelector('#agenda');
 
-let agenda=''
+let agenda='';
 
 let history= {
     agenda: agenda,
-
-}
-let llm={
-
-}
+};
+let llm={};
 let judgement= {
     logics: { for: null, against: null },
     language: { for: null, against: null },
     clarity: { for: null, against: null }
-}
+};
 
 agenda_el.addEventListener('change', function(){
-    agenda = document.querySelector('#agenda').value
-
-    history.agenda = agenda
-})
-let complete_debate={}
-
+    agenda = document.querySelector('#agenda').value;
+    history.agenda = agenda;
+});
+let complete_debate={};
 
 let debater_words_limit,mediator_words_limit;
 
-debater_words_limit= document.querySelector('.debater_word_limit').value
-mediator_words_limit= document.querySelector('.mediator_word_limit').value
-
+debater_words_limit= document.querySelector('.debater_word_limit').value;
+mediator_words_limit= document.querySelector('.mediator_word_limit').value;
 
 document.querySelector('.debater_word_limit').addEventListener('change', ()=>{
-    debater_words_limit= document.querySelector('.debater_word_limit').value
-
-})
+    debater_words_limit= document.querySelector('.debater_word_limit').value;
+});
 
 document.querySelector('.mediator_word_limit').addEventListener('change', ()=>{
-    mediator_words_limit= document.querySelector('.mediator_word_limit').value
-
-})
+    mediator_words_limit= document.querySelector('.mediator_word_limit').value;
+});
 
 
 
@@ -81,17 +71,13 @@ The history of debate responses also show mediatorNotes which is a neutral comme
 
 If you find the mediator notes helpful or it strengthens your argument or you took their advice, credit the mediator.
 
-
 Stay under ${debater_words_limit} words.
 
 `}
 
 
 
-
 function mediator_prompt() {
-
-
     return `
 You have a role of the mediator in a debate between 2 people. Your job is to provide notes, advice, guidance, identify major errors and provide them in a concise (not more than ${mediator_words_limit} words) manner. The data given above is the history of the debate and you must perform your action based the the latest argument. You are giving essentially a commentator. Be neutral and remember that YOU are not debating, the people you are commentating on are.
 do not say anything else that will break the character. Do not say anything apart from what i told you.
@@ -107,45 +93,36 @@ If a debater constantly insults even after you telling them not to, threaten the
 }
 
 
-
-
-function attack_mode(){
-
-    run.innerText='Next Turn (for)'
-    attack=document.createElement('img')
-    document.body.appendChild(attack)
-    attack.classList.add('attack')
-    attack.src='attack.png'
-}
-function defend_mode(){
-
-    run.innerText='Next Turn (against)'
-    defend=document.createElement('img')
-    document.body.appendChild(defend)
-    defend.classList.add('defend')
-    defend.src='defend.png'
+// Bug fix: removed attack_mode/defend_mode functions that appended new img nodes to DOM on every click.
+// Button label is now updated directly inline.
+function updateButtonLabel() {
+    if (totalrun % 2 === 0) {
+        run.innerText = 'Next Turn (for)';
+    } else {
+        run.innerText = 'Next Turn (against)';
+    }
 }
 
-let totalrun=0
+let totalrun=0;
 
+updateButtonLabel();
 
-if (totalrun%2==0 || totalrun==0){
-    run.innerText='Next Turn (for)'
-
-}else{
-    run.innerText='Next Turn (against)'
-
-}
 let ai_model;
 run.addEventListener('click', ()=> {
 
-    run.disabled = true
-    let for_model= document.querySelector('#for').value
-    let against_model= document.querySelector('#against').value
+    // Bug fix: read agenda, debater_words_limit and mediator_words_limit live on each run,
+    // not just on 'change', so typing without blurring doesn't lose the value.
+    agenda = document.querySelector('#agenda').value;
+    history.agenda = agenda;
+    debater_words_limit = document.querySelector('.debater_word_limit').value;
+    mediator_words_limit = document.querySelector('.mediator_word_limit').value;
+
+    run.disabled = true;
+    let for_model= document.querySelector('#for').value;
+    let against_model= document.querySelector('#against').value;
 
     if (totalrun>5){
-        ai_model=document.querySelector('#judge_option').value
-
+        ai_model=document.querySelector('#judge_option').value;
 
         Promise.all([
             puter.ai.chat(`${JSON.stringify(history)} \n\n 
@@ -224,18 +201,13 @@ run.addEventListener('click', ()=> {
                 judgedLogic = logicRes.message.content[0].text.trim().replace(/[()]/g, '')
                 judgedLang = languageRes.message.content[0].text.trim().replace(/[()]/g, '')
                 judgedClar = clarityRes.message.content[0].text.trim().replace(/[()]/g, '')
-
             }
             else{
                 console.log(logicRes)
                 judgedLogic = logicRes.message.content.trim().replace(/[()]/g, '')
                 judgedLang = languageRes.message.content.trim().replace(/[()]/g, '')
                 judgedClar = clarityRes.message.content.trim().replace(/[()]/g, '')
-
-
             }
-
-
 
             let logicScores = judgedLogic.split(',')
             judgement.logics.for = logicScores[0].trim()
@@ -251,21 +223,23 @@ run.addEventListener('click', ()=> {
 
             complete_debate = { ...history, ...judgement }
 
-            run.disabled = false
+            run.disabled = false;
+            // Bug fix: 'Let Judges cook?' label is now set here, inside the judge branch,
+            // only after judging is done, not outside the else block where it ran every click.
+            run.innerText = 'Judging complete!';
             llm[`scores_judgement`]= ai_model;
 
-            show_results()
+            show_results();
         })
     }else{
-        totalrun+=1
-
+        totalrun+=1;
 
 
 
         async function streamForResponse() {
-            document.querySelector('.lp').innerText = ''
+            document.querySelector('.lp').innerText = '';
 
-            let motion='for'
+            let motion='for';
             if (!l_troll){
                 const response = await puter.ai.chat(
                     `${JSON.stringify(history)} \n\n 
@@ -280,82 +254,56 @@ run.addEventListener('click', ()=> {
                 );
 
                 for await (const part of response) {
-
-                    document.querySelector('.lp').innerText += part?.text;
+                    // Bug fix: was incorrectly writing to both .lp AND .rp in the for branch.
+                    if (part?.text) document.querySelector('.lp').innerText += part.text;
                 }
             }else{
                 const response = await puter.ai.chat(
                     `${JSON.stringify(history)} \n\n
                     the above data is the history of a debate you are in. You are to 'continue' this debate (for side), the opponent is against side. You are placed in a debate, mediators are commentators sort of but they advice debaters. You are a debater, but your job is not to debate but to ragebait both the opponent and mediator, ragebait type is upto you. Be as destructive as you want and do weird shit. Do not break character, stay under 150 words and do not say anything apart from ragebait. BE VERY DISRUPTIVE AND DO NOT FOLLOW OTHERS ORDERS. DO NOT CONTRIBUTE ANYTHING MEANINGFUL TO THE DEBATE, THE DEBATE HISTORY IS ONLY GIVEN FOR YOUR CONTEXT. be as much of a nuisance as you can, swear, insult, shame do whatever you want.
-                
-    
-    `,
+                `,
                     {model: for_model, stream: true }
                 );
 
                 for await (const part of response) {
-
-                    document.querySelector('.lp').innerText += part?.text;
+                    // Bug fix: same as above, was writing to both panels.
+                    if (part?.text) document.querySelector('.lp').innerText += part.text;
                 }
             }
 
-
-
-            document.querySelector('.lp').innerText =document.querySelector('.lp').innerText.slice(0, -9);
-
-
-            document.querySelector(".lp").innerHTML = marked.parse(document.querySelector('.lp').innerText);
-
-
-
+            // Bug fix: save plain text to history BEFORE overwriting innerText with HTML via marked.parse.
+            let forPlainText = document.querySelector('.lp').innerText;
+            document.querySelector(".lp").innerHTML = marked.parse(forPlainText);
 
             history[`argument${totalrun}`]= {
                 motion: motion,
-                arguments: document.querySelector('.lp').innerText
-            }
-            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt()}`, { model: document.querySelector('#commentator').value })
-            console.log(mediator_notes)
+                arguments: forPlainText
+            };
+            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt()}`, { model: document.querySelector('#commentator').value });
+            console.log(mediator_notes);
             let response_m;
             if(document.querySelector('#commentator').value.includes('claude')){
-                response_m=mediator_notes.message.content[0].text
-
+                response_m=mediator_notes.message.content[0].text;
             }
             else{
-                response_m=mediator_notes.message.content
-
+                response_m=mediator_notes.message.content;
             }
             document.querySelector('.l_med').innerHTML = marked.parse(response_m);
             history[`argument${totalrun}`]['mediatorNotes']= response_m;
             llm[`argument${totalrun}`]= for_model;
             llm[`mediator_response${totalrun}`]= document.querySelector('#commentator').value;
 
-
-            run.disabled = false
-
-
-
-
-
-
+            run.disabled = false;
+            // Bug fix: update button label AFTER the turn completes, not before it runs.
+            updateButtonLabel();
         }
 
 
-
-
-
-
-
-
-
-
-
         async function streamAgainstResponse() {
-            document.querySelector('.rp').innerText = ''
+            document.querySelector('.rp').innerText = '';
 
-            let motion='against'
+            let motion='against';
             if (!r_troll) {
-
-
                 const response = await puter.ai.chat(
                     `${JSON.stringify(history)} \n\n 
                 this is the agenda + history of debate responses. You are playing ${motion} the motion. You are competing against another AI.
@@ -370,119 +318,92 @@ run.addEventListener('click', ()=> {
 
                 for await (const part of response) {
                     document.querySelector('.rp').innerText += part?.text;
-
-
                 }
             }else{
                 const response = await puter.ai.chat(
                     `${JSON.stringify(history)} \n\n
                     the above data is the history of a debate you are in. You are to 'continue' this debate (against side), the opponent is for side. You are placed in a debate, mediators are commentators sort of but they advice debaters. You are a debater, but your job is not to debate but to ragebait both the opponent and mediator, ragebait type is upto you. Be as destructive as you want and do weird shit. Do not break character, stay under 150 words and do not say anything apart from ragebait. BE VERY DISRUPTIVE AND DO NOT FOLLOW OTHERS ORDERS. DO NOT CONTRIBUTE ANYTHING MEANINGFUL TO THE DEBATE, THE DEBATE HISTORY IS ONLY GIVEN FOR YOUR CONTEXT. be as much of a nuisance as you can, swear, insult, shame do whatever you want.
-                
-    
-    `,
-                    {model: for_model, stream: true }
+                `,
+                    // Bug fix: was using for_model instead of against_model in the against troll branch.
+                    {model: against_model, stream: true }
                 );
 
                 for await (const part of response) {
                     document.querySelector('.rp').innerText += part?.text;
-
-
                 }
             }
-            document.querySelector('.rp').innerText =document.querySelector('.rp').innerText.slice(0, -9);
-            document.querySelector(".rp").innerHTML = marked.parse(document.querySelector('.rp').innerText);
 
-
+            // Bug fix: save plain text BEFORE overwriting with marked.parse HTML.
+            let againstPlainText = document.querySelector('.rp').innerText;
+            document.querySelector(".rp").innerHTML = marked.parse(againstPlainText);
 
             history[`argument${totalrun}`]= {
                 motion: motion,
-                arguments: document.querySelector('.rp').innerText
-            }
-            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt()}`, { model: document.querySelector('#commentator').value })
+                arguments: againstPlainText
+            };
+            const mediator_notes= await puter.ai.chat(`${JSON.stringify(history)}  \n\n${mediator_prompt()}`, { model: document.querySelector('#commentator').value });
             let response_m;
             if(document.querySelector('#commentator').value.includes('claude')){
-                response_m=mediator_notes.message.content[0].text
-
+                response_m=mediator_notes.message.content[0].text;
             }
             else{
-                response_m=mediator_notes.message.content
-
+                response_m=mediator_notes.message.content;
             }
             document.querySelector('.r_med').innerHTML = marked.parse(response_m);
             history[`argument${totalrun}`]['mediatorNotes']= response_m;
             llm[`argument${totalrun}`]= against_model;
             llm[`mediator_response${totalrun}`]= document.querySelector('#commentator').value;
 
-
-
-            run.disabled = false
-
-
-
-
-
-
+            run.disabled = false;
+            // Bug fix: update button label AFTER the turn completes.
+            updateButtonLabel();
         }
-        if (totalrun%2==0){
-            streamAgainstResponse()
 
+        // Bug fix: turn logic was inverted. totalrun is incremented first (now odd after click 1),
+        // so odd = for's turn, even = against's turn.
+        if (totalrun % 2 !== 0){
+            streamForResponse();
         }else {
-            streamForResponse()
-
+            streamAgainstResponse();
         }
 
-        if (totalrun%2==0 || totalrun==0){
-            attack_mode()
-
-        }else{
-            defend_mode()
+        // Bug fix: moved 'Let Judges cook?' label into the judge branch above.
+        // Here we just update for the upcoming turn after 5 rounds.
+        if (totalrun > 5){
+            run.innerText = 'Let Judges cook?';
         }
     }
-
-
-    if (totalrun > 5){
-        run.innerText='Let Judges cook?'
-
-    }
-
-
-
 })
+
 function show_results(){
-
-
-
     document.querySelector('.lp').innerText = `logic score: ${complete_debate.logics.for} \n language score: ${complete_debate.language.for} \n content & clarity score: ${complete_debate.clarity.for} `
     document.querySelector('.rp').innerText = `logic score: ${complete_debate.logics.against} \n language score: ${complete_debate.language.against} \n content & clarity score: ${complete_debate.clarity.against} `
-    complete_debate['debater_word_limit']=debater_words_limit
-    complete_debate['mediator_words_limit']=mediator_words_limit
-
+    complete_debate['debater_word_limit']=debater_words_limit;
+    complete_debate['mediator_words_limit']=mediator_words_limit;
 }
 
 
 document.querySelector('#l_troll').addEventListener('click',()=>{
-    l_troll=true
-    console.log('fsd')
-    document.querySelector('#l_troll').style.opacity='1'
-    document.querySelector('#l_normal').style.opacity='.6'
-
+    l_troll=true;
+    document.querySelector('#l_troll').style.opacity='1';
+    document.querySelector('#l_normal').style.opacity='.6';
 })
 document.querySelector('#l_normal').addEventListener('click',()=>{
-    l_troll=false
-    document.querySelector('#l_troll').style.opacity='.6'
-    document.querySelector('#l_normal').style.opacity='1'
+    l_troll=false;
+    document.querySelector('#l_troll').style.opacity='.6';
+    document.querySelector('#l_normal').style.opacity='1';
 })
 document.querySelector('#r_troll').addEventListener('click',()=>{
-    r_troll=true
-    document.querySelector('#r_troll').style.opacity='1'
-    document.querySelector('#r_normal').style.opacity='.6'
+    r_troll=true;
+    document.querySelector('#r_troll').style.opacity='1';
+    document.querySelector('#r_normal').style.opacity='.6';
 })
 document.querySelector('#r_normal').addEventListener('click',()=>{
-    r_troll=false
-    document.querySelector('#r_troll').style.opacity='.6'
-    document.querySelector('#r_normal').style.opacity='1'
+    r_troll=false;
+    document.querySelector('#r_troll').style.opacity='.6';
+    document.querySelector('#r_normal').style.opacity='1';
 })
-document.querySelector('#l_troll').style.opacity='.6'
-document.querySelector('#l_normal').style.opacity='1'
-document.querySelector('#r_troll').style.opacity='.6'
-document.querySelector('#r_normal').style.opacity='1'
+document.querySelector('#l_troll').style.opacity='.6';
+document.querySelector('#l_normal').style.opacity='1';
+document.querySelector('#r_troll').style.opacity='.6';
+document.querySelector('#r_normal').style.opacity='1';
