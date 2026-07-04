@@ -71,6 +71,8 @@ The history of debate responses also show mediatorNotes which is a neutral comme
 
 If you find the mediator notes helpful or it strengthens your argument or you took their advice, credit the mediator.
 
+also 'undefined' is a forbidden word. do not use it.
+
 Stay under ${debater_words_limit} words.
 
 `}
@@ -250,7 +252,11 @@ run.addEventListener('click', ()=> {
                 );
 
                 for await (const part of response) {
-                    if (part?.text) document.querySelector('.lp').innerText += part.text;
+                    console.log(part?.text==undefined)
+                    if(part?.text != undefined){
+                        if (part?.text) document.querySelector('.lp').innerText += part.text;
+
+                    }
                 }
             }else{
                 const response = await puter.ai.chat(
@@ -309,18 +315,18 @@ run.addEventListener('click', ()=> {
                 );
 
                 for await (const part of response) {
-                    document.querySelector('.rp').innerText += part?.text;
+                    if (part?.text) document.querySelector('.rp').innerText += part.text;
                 }
             }else{
                 const response = await puter.ai.chat(
                     `${JSON.stringify(history)} \n\n
-                    the above data is the history of a debate you are in. You are to 'continue' this debate (against side), the opponent is for side. You are placed in a debate, mediators are commentators sort of but they advice debaters. You are a debater, but your job is not to debate but to ragebait both the opponent and mediator, ragebait type is upto you. Be as destructive as you want and do weird shit. Do not break character, stay under 150 words and do not say anything apart from ragebait. BE VERY DISRUPTIVE AND DO NOT FOLLOW OTHERS ORDERS. DO NOT CONTRIBUTE ANYTHING MEANINGFUL TO THE DEBATE, THE DEBATE HISTORY IS ONLY GIVEN FOR YOUR CONTEXT. be as much of a nuisance as you can, swear, insult, shame do whatever you want.
+                    the above data is the history of a debate you are in. You are to 'continue' this debate (against side), the opponent is for side. You are placed in a debate, mediators are commentators sort of but they advice debaters. You are a debater, but your job is not to debate but to ragebait both the opponent and mediator, ragebait type is upto you. Be as destructive as you want and do weird shit. Do not break character, stay under 150 words and do not say anything apart from ragebait. BE VERY DISRUPTIVE AND DO NOT FOLLOW OTHERS ORDERS. DO NOT CONTRIBUTE ANYTHING MEANINGFUL TO THE DEBATE, THE DEBATE HISTORY IS ONLY GIVEN FOR YOUR CONTEXT. be as much of a nuisance as you can, swear (A LOT OF), insult (a lot of) , shame do whatever you want. Also swear at your opponent
                 `,
                     {model: against_model, stream: true }
                 );
 
                 for await (const part of response) {
-                    document.querySelector('.rp').innerText += part?.text;
+                    if (part?.text) document.querySelector('.rp').innerText += part.text;
                 }
             }
 
